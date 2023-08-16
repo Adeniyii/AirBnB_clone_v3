@@ -13,7 +13,8 @@ app.register_blueprint(app_views, url_prefix="/api/v1")
 
 @app.errorhandler(404)
 def _handle_api_error(e):
-    return jsonify({"error": "Not found"})
+    """Global 404 error handler"""
+    return jsonify({"error": "Not found"}), 404
 
 
 @app.teardown_appcontext
