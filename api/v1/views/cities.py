@@ -6,34 +6,46 @@ from api.v1.views import app_views
 from models import storage, classes
 
 
-@app_views.route("/cities", methods=["GET"])
-def get_cities():
-    """Returns all cities in json response"""
-    cities = []
-    cities_objs = storage.all("City")
-    for city in cities_objs.values():
-        cities.append(city.to_dict())
-    return jsonify(cities)
+@app_views.route("/states/<state_id>/cities", methods=["GET"])
+def get_cities(state_id):
+    """Returns all cities linked to given state_id"""
+    state_obj = storage.get("State", state_id)
+    if state_obj is None:
+        return abort(404)
+    cities = state_obj.cities
+    if cities is None or len(cities) == 0:
+        return abort(404)
+    city_objs = []
+    for city in cities:
+        city_objs.append(city.to_dict())
+    return jsonify(city_objs)
 
 
-@app_views.route("/cities/", methods=["POST"])
-def create_city():
+@app_views.route("/cities/<city_id>", methods=["GET"])
+def get_city(city_id):
+    """Returns city with given city_id"""
+    city = storage.get("City", city_id)
+    if city is None:
+        return abort(404)
+    return jsonify(city.to_dict())
+
+
+@app_views.route("states/<state_id>/cities", methods=["POST"])
+def create_city(state_id):
     """Creates a new city in storage"""
     data = request.get_json(silent=True)
     if data is None:
         return abort(400, description="Not a JSON")
     if "name" not in data:
         return abort(400, description="Missing name")
+    state = storage.get("State", state_id)
+    if state is None:
+        return abort(404)
     city = classes["City"](**data)
-    city.save()
+    state.cities.append(city)
+    state.save()
+    city.__delattr__("state")
     return jsonify(city.to_dict()), 201
-
-
-@app_views.route("/cities/<city_id>", methods=["GET"])
-def get_city(city_id):
-    """Returns a city object or None if not found."""
-    city = storage.get("City", city_id)
-    return jsonify(city.to_dict()) if city else abort(404)
 
 
 @app_views.route("/cities/<city_id>", methods=["DELETE"])
