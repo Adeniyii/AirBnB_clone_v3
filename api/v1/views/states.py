@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 """Defines all routes for the `States` entity
 """
-from flask import abort, jsonify
+from flask import abort, jsonify, request
 from api.v1.views import app_views
-from models import storage
+from models import storage, classes
 
 
 @app_views.route("/states")
@@ -14,6 +14,19 @@ def get_states():
     for state in states_objs.values():
         states.append(state.to_dict())
     return jsonify(states)
+
+
+@app_views.route("/states", methods=["POST"])
+def create_state():
+    """Creates a new state in storage"""
+    data = request.get_json(silent=True)
+    if data is None:
+        return abort(400, description="Not a JSON")
+    if "name" not in data:
+        return abort(400, description="Missing name")
+    state = classes["State"](data)
+    state.save()
+    return jsonify(state), 201
 
 
 @app_views.route("/states/<state_id>", methods=["GET"])

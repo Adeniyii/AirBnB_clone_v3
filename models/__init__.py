@@ -29,9 +29,9 @@ def __get_modelname_mapping():
 model_mapping = __get_modelname_mapping()
 
 if storage_t == "db":
-    from models.engine.db_storage import DBStorage
+    from models.engine.db_storage import DBStorage, classes
     storage = DBStorage()
 else:
-    from models.engine.file_storage import FileStorage
+    from models.engine.file_storage import FileStorage, classes
     storage = FileStorage()
 storage.reload()
