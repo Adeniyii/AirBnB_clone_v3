@@ -15,3 +15,10 @@ def get_states():
         states.append(state.to_dict())
     return jsonify(states)
 
+
+@app_views.route("/states/<state_id>", methods=["GET"])
+def get_state(state_id):
+    """Returns a state object or None if not found."""
+    state = storage.get("State", state_id)
+    return jsonify(state.to_dict()) if state else abort(404)
+
