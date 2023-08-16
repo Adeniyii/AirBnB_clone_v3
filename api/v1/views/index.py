@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """Defines a function"""
 from flask.json import jsonify
 from api.v1.views import app_views
