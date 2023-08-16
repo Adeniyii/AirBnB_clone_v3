@@ -45,3 +45,23 @@ def delete_state(state_id):
     storage.delete(state)
     storage.save()
     return jsonify({})
+
+
+@app_views.route("/states/<state_id>", methods=["PUT"])
+def update_state(state_id):
+    """Update a state object by id"""
+    state = storage.get("State", state_id)
+    if state is None:
+        return abort(404)
+    data = request.get_json(silent=True)
+    if data is None:
+        return abort(400, description="Not a JSON")
+
+    data.pop("id", None)
+    data.pop("updated_at", None)
+    data.pop("created_at", None)
+
+    for k, v in data.items():
+        setattr(state, k, v)
+    state.save()
+    return jsonify(state.to_dict())
