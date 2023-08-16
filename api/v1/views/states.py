@@ -6,7 +6,7 @@ from api.v1.views import app_views
 from models import storage, classes
 
 
-@app_views.route("/states")
+@app_views.route("/states", methods=["GET"])
 def get_states():
     """Returns all states in json response"""
     states = []
@@ -24,9 +24,9 @@ def create_state():
         return abort(400, description="Not a JSON")
     if "name" not in data:
         return abort(400, description="Missing name")
-    state = classes["State"](data)
+    state = classes["State"](**data)
     state.save()
-    return jsonify(state), 201
+    return jsonify(state.to_dict()), 201
 
 
 @app_views.route("/states/<state_id>", methods=["GET"])
