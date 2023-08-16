@@ -9,3 +9,11 @@ def status():
     """Defines a status route returning a json object of the api status.
     """
     return jsonify({"status": "OK"})
+
+
+@app_views.route("/stats")
+def stats():
+    """Returns all stored entities from storage"""
+    from models import storage
+    entities = storage.count()
+    return (jsonify(entities))
