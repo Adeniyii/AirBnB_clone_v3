@@ -16,7 +16,7 @@ def get_states():
     return jsonify(states)
 
 
-@app_views.route("/states", methods=["POST"])
+@app_views.route("/states/", methods=["POST"])
 def create_state():
     """Creates a new state in storage"""
     data = request.get_json(silent=True)
