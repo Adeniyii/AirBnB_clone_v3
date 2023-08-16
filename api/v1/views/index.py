@@ -14,6 +14,9 @@ def status():
 @app_views.route("/stats")
 def stats():
     """Returns all stored entities from storage"""
-    from models import storage
-    entities = storage.count()
-    return (jsonify(entities))
+    from models import storage, model_mapping
+    entity_count_map = {}
+    for entity in model_mapping:
+        entity_count = storage.count(entity)
+        entity_count_map[model_mapping[entity]] = entity_count
+    return (jsonify(entity_count_map))
