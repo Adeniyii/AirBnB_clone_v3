@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Defines all routes for the `States` entity
+"""Defines all routes for the `State` entity
 """
 from flask import abort, jsonify, request
 from api.v1.views import app_views
