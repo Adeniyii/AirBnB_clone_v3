@@ -2,12 +2,18 @@
 """Instantiates the flask application"""
 import os
 from flask import Flask
+from flask.json import jsonify
 from models import storage
 from api.v1.views import app_views
 
 
 app = Flask(__name__)
 app.register_blueprint(app_views, url_prefix="/api/v1")
+
+
+@app.errorhandler(404)
+def _handle_api_error(e):
+    return jsonify({"error": "Not found"})
 
 
 @app.teardown_appcontext
