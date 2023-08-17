@@ -24,7 +24,7 @@ def get_reviews(place_id):
 @app_views.route("/reviews/<review_id>", methods=["GET"])
 def get_review(review_id):
     """Returns review with given review_id"""
-    review = storage.get("review", review_id)
+    review = storage.get("Review", review_id)
     if review is None:
         return abort(404)
     return jsonify(review.to_dict())
@@ -57,7 +57,7 @@ def create_review(place_id):
 @app_views.route("/reviews/<review_id>", methods=["DELETE"])
 def delete_review(review_id):
     """Deletes a review object from storage"""
-    review = storage.get("review", review_id)
+    review = storage.get("Review", review_id)
     if review is None:
         return abort(404)
     storage.delete(review)
@@ -68,7 +68,7 @@ def delete_review(review_id):
 @app_views.route("/reviews/<review_id>", methods=["PUT"])
 def update_review(review_id):
     """Update a review object by id"""
-    review = storage.get("review", review_id)
+    review = storage.get("Review", review_id)
     if review is None:
         return abort(404)
     data = request.get_json(silent=True)
