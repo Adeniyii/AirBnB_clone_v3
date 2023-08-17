@@ -49,7 +49,7 @@ def create_review(place_id):
     review = classes["review"](**data)
     place.reviews.append(review)
     place.save()
-    delattr(review, "places")
+    delattr(review, "place")
     delattr(review, "user")
     return jsonify(review.to_dict()), 201
 
