@@ -50,7 +50,6 @@ def create_review(place_id):
     place.reviews.append(review)
     place.save()
     delattr(review, "place")
-    delattr(review, "user")
     return jsonify(review.to_dict()), 201
 
 
