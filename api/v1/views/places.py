@@ -97,7 +97,7 @@ def places_search():
         all_places = storage.all("Place")
         if all_places is None:
             return jsonify([])
-        return jsonify([place for place in all_places.values()])
+        return jsonify([place.to_dict() for place in all_places.values()])
     total_places = {}
     state_ids = body.get("states", [])
     city_ids = body.get("cities", [])
@@ -125,7 +125,7 @@ def places_search():
                 missing_amenity = True
                 break
         if not missing_amenity:
-            places.append(v)
+            places.append(v.to_dict())
 
         missing_amenity = False
     return jsonify(places)
