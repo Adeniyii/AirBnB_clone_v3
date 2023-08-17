@@ -98,10 +98,11 @@ def places_search():
         if all_places is None:
             return jsonify([])
         return jsonify([place.to_dict() for place in all_places.values()])
-    total_places = {}
+
     state_ids = body.get("states", [])
     city_ids = body.get("cities", [])
     amenity_ids = body.get("amenities", [])
+    total_places = {}
     places = []
 
     for state_id in state_ids:
@@ -125,6 +126,7 @@ def places_search():
                 missing_amenity = True
                 break
         if not missing_amenity:
+            delattr(v, "amenities")
             places.append(v.to_dict())
 
         missing_amenity = False
