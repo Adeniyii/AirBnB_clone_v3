@@ -46,10 +46,11 @@ def create_review(place_id):
     if place is None or user is None:
         return abort(404)
 
-    review = classes["review"](**data)
+    review = classes["Review"](**data)
     place.reviews.append(review)
     place.save()
     delattr(review, "place")
+    delattr(review, "user")
     return jsonify(review.to_dict()), 201
 
 
