@@ -107,14 +107,14 @@ def places_search():
     for state_id in state_ids:
         state = storage.get("State", state_id)
         if state is None:
-            break
+            continue
         for city in state.cities:
             for place in city.places:
                 total_places[place.id] = place
     for city_id in city_ids:
         city = storage.get("City", city_id)
         if city is None:
-            break
+            continue
         for place in city.places:
             total_places[place.id] = place
     for _, v in total_places.items():
