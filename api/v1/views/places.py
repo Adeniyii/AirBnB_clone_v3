@@ -50,6 +50,7 @@ def create_place(city_id):
     city.places.append(place)
     city.save()
     place.__delattr__("city")
+    place.__delattr__("user")
     return jsonify(place.to_dict()), 201
 
 
