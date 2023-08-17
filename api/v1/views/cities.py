@@ -13,7 +13,7 @@ def get_cities(state_id):
     if state_obj is None:
         return abort(404)
     cities = state_obj.cities
-    if cities is None or len(cities) == 0:
+    if cities is None:
         return abort(404)
     city_objs = []
     for city in cities:
@@ -30,7 +30,7 @@ def get_city(city_id):
     return jsonify(city.to_dict())
 
 
-@app_views.route("states/<state_id>/cities", methods=["POST"])
+@app_views.route("states/<state_id>/cities/", methods=["POST"])
 def create_city(state_id):
     """Creates a new city in storage"""
     data = request.get_json(silent=True)
