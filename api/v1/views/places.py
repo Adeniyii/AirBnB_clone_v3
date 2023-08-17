@@ -2,7 +2,7 @@
 """Defines all routes for the `Place` entity
 """
 from flask import abort, jsonify, request
-from api.v1.views import app_views
+from api.v1.views import app_views, places_amenities
 from models import storage, classes
 
 
@@ -85,3 +85,47 @@ def update_place(place_id):
         setattr(place, k, v)
     place.save()
     return jsonify(place.to_dict())
+
+
+@app_views.route("/places_search", methods=["POST"])
+def places_search():
+    """Filter place results by search keys in json body"""
+    body = request.get_json(silent=True)
+    if body is None:
+        return abort(400, description="Not a JSON")
+    if len(body) == 0 or not any(body.values()):
+        all_places = storage.all("Place")
+        if all_places is None:
+            return jsonify([])
+        return jsonify([place for place in all_places.values()])
+    total_places = {}
+    state_ids = body.get("states", [])
+    city_ids = body.get("cities", [])
+    amenity_ids = body.get("amenities", [])
+    places = []
+
+    for state_id in state_ids:
+        state = storage.get("State", state_id)
+        if state is None:
+            break
+        for city in state.cities:
+            for place in city.places:
+                total_places[place.id] = place
+    for city_id in city_ids:
+        city = storage.get("City", city_id)
+        if city is None:
+            break
+        for place in city.places:
+            total_places[place.id] = place
+    for _, v in total_places.items():
+        missing_amenity = False
+        place_amenity_ids = [am.id for am in v.amenities]
+        for amenity_id in amenity_ids:
+            if amenity_id not in place_amenity_ids:
+                missing_amenity = True
+                break
+        if not missing_amenity:
+            places.append(v)
+
+        missing_amenity = False
+    return jsonify(places)
