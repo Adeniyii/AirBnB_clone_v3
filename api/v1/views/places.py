@@ -49,8 +49,8 @@ def create_place(city_id):
     place = classes["Place"](**data)
     city.places.append(place)
     city.save()
-    place.__delattr__("city")
-    place.__delattr__("user")
+    delattr(place, "cities")
+    delattr(place, "user")
     return jsonify(place.to_dict()), 201
 
 
