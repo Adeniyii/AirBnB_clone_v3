@@ -7,7 +7,7 @@ from models import storage, classes
 
 
 @app_views.route("/places/<place_id>/amenities", methods=["GET"])
-def get_amenities(place_id):
+def get_place_amenities(place_id):
     """Returns all amenities linked to given place_id"""
     place_obj = storage.get("Place", place_id)
     if place_obj is None:
@@ -23,7 +23,7 @@ def get_amenities(place_id):
 
 
 @app_views.route("places/<place_id>/amenities/<amenity_id>", methods=["POST"])
-def link_amenity(place_id, amenity_id):
+def link_place_amenity(place_id, amenity_id):
     """Creates a new amenity in storage"""
     place = storage.get("Place", place_id)
     amenity = storage.get("Amenity", amenity_id)
@@ -40,7 +40,7 @@ def link_amenity(place_id, amenity_id):
 
 
 @app_views.route("places/<place_id>/amenities/<amenity_id>", methods=["DELETE"])  # noqa
-def delete_amenity(place_id, amenity_id):
+def delete_place_amenity(place_id, amenity_id):
     """Deletes a amenity object from storage"""
     place = storage.get("Place", place_id)
     amenity = storage.get("Amenity", amenity_id)
