@@ -118,16 +118,15 @@ def places_search():
             continue
         for place in city.places:
             total_places[place.id] = place
-    for _, v in total_places.items():
+    for pl in total_places.values():
         missing_amenity = False
-        place_amenity_ids = [am.id for am in v.amenities]
+        place_amenity_ids = [am.id for am in pl.amenities]
         for amenity_id in amenity_ids:
             if amenity_id not in place_amenity_ids:
                 missing_amenity = True
                 break
-        if not missing_amenity:
-            delattr(v, "amenities")
-            places.append(v.to_dict())
+        if missing_amenity is False:
+            delattr(pl, "amenities")
+            places.append(pl.to_dict())
 
-        missing_amenity = False
     return jsonify(places)
