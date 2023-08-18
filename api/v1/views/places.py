@@ -109,6 +109,8 @@ def places_search():
         if state is None:
             continue
         for city in state.cities:
+            if city is None:
+                continue
             for place in city.places:
                 total_places[place.id] = place
     for city_id in city_ids:
