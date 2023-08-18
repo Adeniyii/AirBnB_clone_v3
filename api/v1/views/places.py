@@ -103,7 +103,6 @@ def places_search():
     city_ids = body.get("cities", [])
     amenity_ids = body.get("amenities", [])
     total_places = {}
-    places = []
 
     for state_id in state_ids:
         state = storage.get("State", state_id)
@@ -118,7 +117,17 @@ def places_search():
             continue
         for place in city.places:
             total_places[place.id] = place
-    for pl in total_places.values():
+
+    if len(total_places) == 0:
+        total_places = storage.all("Place")
+    filtered_places = filter_places(total_places, amenity_ids)
+    return jsonify(filtered_places)
+
+
+def filter_places(places, amenity_ids):
+    """Filter place record exclusively by amenity_ids"""
+    filtered_places = []
+    for pl in places.values():
         missing_amenity = False
         place_amenity_ids = [am.id for am in pl.amenities]
         for amenity_id in amenity_ids:
@@ -127,6 +136,5 @@ def places_search():
                 break
         if missing_amenity is False:
             delattr(pl, "amenities")
-            places.append(pl.to_dict())
-
-    return jsonify(places)
+            filtered_places.append(pl.to_dict())
+    return filtered_places
